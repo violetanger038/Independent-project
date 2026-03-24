@@ -1,35 +1,61 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    background-color: #333;
     margin: 0;
     padding: 0;
+    justify-content: center;
+    align-items: center;
+    height: 120vh;
+}
+.main-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    height: 100%;
+    width: 80vw;
+    gap: 0px;
+    background-color: transparent;
 }
 
 .card-container {
+    position: relative;
+    left: 20vw;
+    top: -102vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 150vh;
-    clip-path: ellipse(50% 30% at center);
+    height: 100vh;
+    width: 80vw;
+    aspect-ratio: 2/3;
+  /* update the 85% to control the curvature
+     you can also update the 50% to control the position
+  */
+    clip-path: ellipse(100% 85% at 100% 50%);
+    background: #CC2A41;
+
     background-image: url(startBackground.jpg);
     background-size: cover;
     background-repeat: no-repeat;
+    z-index: 10;
 }
 
-.card {
+.menu {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 8px;
+    padding: 20px;
     width: 40vw;
-    height: 60vh;
-    background-color: #ffffff89;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 5px 10px rgb(0, 0, 0);
-    margin: 0 10px;
+    height: 96vh;
+    z-index: 20;
 }
+
 .navbar {
+    position: relative;
     background-color: #333;
     color: #fff;
     padding: 10px 20px;
+    box-shadow: 0 5px 10px rgb(0, 0, 0);
+    z-index: 100;
 }
 .navbar h1 {
     margin: 0;
@@ -53,12 +79,16 @@ body {
     text-decoration: none;
 }
 .footer {
+    position: relative;
+    bottom: 103vh;
     background-color: #333;
     color: #fff;
     text-align: center;
     padding: 10px 0;
     width: 100%;
-    height: 50px;
+    height: 20vh;
+    box-shadow: 0px 5px 5px 10px rgb(0, 0, 0);
+    z-index: 100;
 }
 .footer p {
     margin: 0;
