@@ -1,0 +1,43 @@
+body{
+    background-color: rgb(55, 55, 55);
+   
+     
+}
+
+
+#game-container1 {
+    position: relative;
+    width: 50%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color:violet;
+}
+#game-container2 {
+    position: relative;
+    width: 50%;
+    height: 50vh;
+    display: flex;
+    left:50%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color:darkblue;
+}
+canvas {
+    width: 100px;
+    height: 150px;
+    margin: 10px;
+    background-color: rgba(79, 46, 1, 0.716);
+}
+#ATCK1 {
+    background-color: rgba(255, 0, 0, 0.716);
+}
+#ATCK2 {
+    background-color: rgba(0, 255, 0, 0.716);
+}
+#SUP1 {
+    background-color: rgba(0, 0, 255, 0.716);
+}
