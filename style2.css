@@ -10,10 +10,12 @@ body{
     width: 50%;
     height: 50vh;
     display: flex;
+    flex-direction: row-reverse;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    background-color:violet;
+    background-color:lightblue;
+    border: 2px solid gold;
 }
 #game-container2 {
     position: relative;
@@ -24,20 +26,54 @@ body{
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    background-color:darkblue;
+    background-image:url(pictures/Water.png) ;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    border: 2px solid gold;
 }
 canvas {
-    width: 100px;
-    height: 150px;
+    width: 150px;
+    height: 200px;
     margin: 10px;
     background-color: rgba(79, 46, 1, 0.716);
 }
-#ATCK1 {
+.ATCK {
     background-color: rgba(255, 0, 0, 0.716);
 }
-#ATCK2 {
-    background-color: rgba(0, 255, 0, 0.716);
+.DEF {
+    background-color: rgb(0, 0, 255);
 }
-#SUP1 {
-    background-color: rgba(0, 0, 255, 0.716);
+.SUP {
+    background-color: rgba(77, 255, 0, 0.716);
+}
+.Deck {
+    background-color: rgb(255, 0, 234);
+    border: 2px solid gold;
+    height: 300px;
+    width: 200px;
+}
+#DECK {
+    position: relative;
+    bottom: 500px;
+    z-index: 10;
+    background-color: rgb(255, 0, 234);
+    border: 2px solid gold;
+    height: 300px;
+    width: 200px;
+}
+#card1 {
+    position: relative;
+    top: ;
+    left: 0;
+}
+#card2 {
+    position: relative;
+    bottom: 300px;
+    left: 50px;
+}
+#card3 {
+    position: relative;
+    bottom: 550px;
+    left: 100px;
 }
