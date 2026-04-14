@@ -1,9 +1,10 @@
+
 body{
     background-color: rgb(55, 55, 55);
    
      
 }
-
+/*
 
 #game-container1 {
     position: relative;
@@ -55,7 +56,7 @@ canvas {
 }
 #DECK {
     position: relative;
-    bottom: 500px;
+    bottom: 400px;
     z-index: 10;
     background-color: rgb(255, 0, 234);
     border: 2px solid gold;
@@ -76,4 +77,49 @@ canvas {
     position: relative;
     bottom: 550px;
     left: 100px;
+}
+    */ 
+.card {
+  width: 100px;
+  height: 150px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+.field {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  min-height: 400px;
+  margin-bottom: 20px;
+  background: lightgray;
+}
+.hand {
+  position: relative;
+  z-index: 10;
+  bottom: 100px;
+  left: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 600px;
+  min-height: 200px;
+  background: lightblue;
+}
+.deck {
+  position: relative;
+  z-index: 5;
+  bottom: 600px;
+  left: 70%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 300px;
+  min-height: 400px;
+  background: lightgreen;
 }

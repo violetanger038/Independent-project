@@ -1,3 +1,4 @@
+/*
 const characters = {
     '1':pictures/one.png ,
     '2':pictures/two.png ,
@@ -24,38 +25,40 @@ characterMap.set(9, characters['9']);
 characterMap.set(10, characters['10']);
 
 let randomNumber = Math.floor(Math.random() * 10) + 1;
-/*
-// 1. Initial Setup
-const deck = ['A♠', '2♠', '3♠', 'K♥', 'Q♦', 'J♣']; // Use your actual card objects here
-let drawnCard = null;
-
-const handSlots = document.querySelectorAll('.hand-slot');
-const drawBtn = document.getElementById('draw-btn');
-const displayArea = document.getElementById('drawn-card-display');
-
-// 2. Draw Functionality
-drawBtn.addEventListener('click', () => {
-    if (deck.length > 0) {
-        drawnCard = deck.pop(); // Removes and returns the last card in the array
-        displayArea.textContent = `Drawn: ${drawnCard}`;
-    } else {
-        alert("No more cards in the deck!");
-    }
-});
-
-// 3. Placement Functionality
-handSlots.forEach((slot, index) => {
-    slot.addEventListener('click', () => {
-        if (drawnCard) {
-            // Place the card in the clicked slot
-            slot.textContent = drawnCard;
-            
-            // Clear the drawnCard variable so they can't place it again
-            drawnCard = null;
-            displayArea.textContent = "Card placed! Draw another.";
-        } else {
-            alert("Draw a card first!");
-        }
-    });
-});
 */
+const cards = [
+    { id: 1, name: "Fire Dragon", atk: 5, hp: 5 },
+    { id: 2, name: "Ice Shield", atk: 2, hp: 8 },
+    { id: 3, name: "Earth Golem", atk: 3, hp: 10 },
+    { id: 4, name: "Wind Spirit", atk: 4, hp: 6 },
+    { id: 5, name: "Light Guardian", atk: 6, hp: 4 }
+];
+
+function createCardUI(card) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<h3>${card.name}</h3><p>ATK: ${card.atk} | HP: ${card.hp}</p>`;
+    return div;
+}
+
+function drawCard() {
+    // Select the button
+    const deckButton = document.getElementById('deck');
+    // Select the container
+    const hand = document.querySelector('.player-hand');
+
+    if (deckButton && hand) {
+        deckButton.onclick = () => {
+            const randomCard = cards[Math.floor(Math.random() * cards.length)];
+            const cardUI = createCardUI(randomCard);
+            hand.appendChild(cardUI);
+        };
+    } else {
+        console.error("Deck or Hand element not found!");
+    }
+}
+
+// Run initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    drawCard();
+});
