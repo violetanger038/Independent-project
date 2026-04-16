@@ -41,24 +41,67 @@ function createCardUI(card) {
     return div;
 }
 
-function drawCard() {
-    // Select the button
-    const deckButton = document.getElementById('deck');
-    // Select the container
-    const hand = document.querySelector('.player-hand');
+const playerHand = document.getElementById('player-hand');
+const playerField = document.getElementById('player-field');
 
-    if (deckButton && hand) {
-        deckButton.onclick = () => {
-            const randomCard = cards[Math.floor(Math.random() * cards.length)];
-            const cardUI = createCardUI(randomCard);
-            hand.appendChild(cardUI);
-        };
-    } else {
-        console.error("Deck or Hand element not found!");
+let handCount = 0;
+let fieldCount = 0;
+let mana = 3;
+
+const MAX_CARDS = 5; // Good practice to use a constant
+
+function drawCard() {
+    // 1. Check the limit BEFORE drawing
+    if (handCount >= MAX_CARDS) {
+        console.log("Hand full!");
+        return; // Stop function execution
+    }
+
+    const randomCard = cards[Math.floor(Math.random() * cards.length)];
+    const cardUI = createCardUI(randomCard);
+    playerHand.appendChild(cardUI);
+    handCount++;
+    console.log("Cards in hand:", handCount);
+}
+
+function playCard(card) {
+    if (fieldCount < 5 && mana > 0) {
+        playerField.appendChild(card);
+        handCount--;
+        fieldCount++; 
+        mana--;
+    }
+}
+function cardDeath(card) {
+    if (fieldCount > 0) {
+        playerField.removeChild(card);
+        fieldCount--;
     }
 }
 
-// Run initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    drawCard();
-});
+function initializeGame() {
+    // Initialize game state, event listeners, etc.
+}
+function gameLoop() {
+
+        // Main game logic goes here
+            const deckButton = document.getElementById('deck');
+        if (deckButton) {
+            deckButton.onclick = drawCard;
+        } else {
+            console.error("Deck button not found!");
+        }
+        if (mana > 0) {
+            playerHand.addEventListener('click', function(event) {
+                const card = event.target.closest('.card');
+                if (card) {
+                    playCard(card);
+                }
+                
+            });
+        }
+    }
+
+
+window.onload = initializeGame;
+window.requestAnimationFrame(gameLoop);
