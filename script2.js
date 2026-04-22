@@ -26,82 +26,100 @@ characterMap.set(10, characters['10']);
 
 let randomNumber = Math.floor(Math.random() * 10) + 1;
 */
+// --- Constants & Config ---
+const CONFIG = {
+  MAX_HAND: 5,
+  MAX_FIELD: 5,
+  STARTING_MANA: 3,
+};
+
+
 const cards = [
-    { id: 1, name: "Fire Dragon", atk: 5, hp: 5 },
-    { id: 2, name: "Ice Shield", atk: 2, hp: 8 },
-    { id: 3, name: "Earth Golem", atk: 3, hp: 10 },
-    { id: 4, name: "Wind Spirit", atk: 4, hp: 6 },
-    { id: 5, name: "Light Guardian", atk: 6, hp: 4 }
+  { id: 1, name: "Fire Dragon", atk: 5, hp: 5 },
+  { id: 2, name: "Ice Shield", atk: 2, hp: 8 },
+  { id: 3, name: "Earth Golem", atk: 3, hp: 10 },
+  { id: 4, name: "Wind Spirit", atk: 4, hp: 6 },
+  { id: 5, name: "Light Guardian", atk: 6, hp: 4 }
 ];
 
-function createCardUI(card) {
+// --- Game Logic Class ---
+class CardGame {
+  constructor() {
+    this.hand = [];
+    this.field = [];
+    this.mana = CONFIG.STARTING_MANA;
+    
+    // DOM Elements
+    this.handEl = document.getElementById('player-hand');
+    this.fieldEl = document.getElementById('player-field');
+    this.deckBtn = document.getElementById('deck');
+    this.statusEl = document.getElementById('player-status');
+    this.init();
+    this.updateStatus();
+
+  }
+
+  init() {
+    this.deckBtn?.addEventListener('click', () => this.drawCard());
+    this.handEl.addEventListener('click', (e) => this.handleHandClick(e));
+    
+  }
+
+  updateStatus() {
+    this.statusEl.innerHTML = `<p>Mana: <span id="player-mana">${this.mana}</span></p>`;
+  }
+
+  createCardUI(card) {
     const div = document.createElement('div');
     div.className = 'card';
     div.innerHTML = `<h3>${card.name}</h3><p>ATK: ${card.atk} | HP: ${card.hp}</p>`;
+    div.dataset.id = card.id; // Store ID for logic
     return div;
-}
+  }
 
-const playerHand = document.getElementById('player-hand');
-const playerField = document.getElementById('player-field');
-
-let handCount = 0;
-let fieldCount = 0;
-let mana = 3;
-
-const MAX_CARDS = 5; // Good practice to use a constant
-
-function drawCard() {
-    // 1. Check the limit BEFORE drawing
-    if (handCount >= MAX_CARDS) {
-        console.log("Hand full!");
-        return; // Stop function execution
-    }
+  drawCard() {
+    if (this.hand.length >= CONFIG.MAX_HAND) return console.log("Hand full!");
 
     const randomCard = cards[Math.floor(Math.random() * cards.length)];
-    const cardUI = createCardUI(randomCard);
-    playerHand.appendChild(cardUI);
-    handCount++;
-    console.log("Cards in hand:", handCount);
+    this.hand.push(randomCard);
+    this.renderHand();
+  }
+
+  handleHandClick(event) {
+    const cardEl = event.target.closest('.card');
+    if (!cardEl) return;
+    
+    const cardId = parseInt(cardEl.dataset.id);
+    this.playCard(cardId);
+  }
+
+  playCard(cardId) {
+    if (this.field.length >= CONFIG.MAX_FIELD || this.mana <= 0) return;
+
+    const cardIndex = this.hand.findIndex(c => c.id === cardId);
+    if (cardIndex === -1) return;
+
+    const [cardToPlay] = this.hand.splice(cardIndex, 1);
+    this.field.push(cardToPlay);
+    this.mana--;
+    this.updateStatus();
+    
+    this.renderField();
+    this.renderHand();
+    console.log(`Played ${cardToPlay.name}. Mana remaining: ${this.mana}`);
+  }
+
+  // Basic Rendering
+  renderHand() {
+    this.handEl.innerHTML = '';
+    this.hand.forEach(card => this.handEl.appendChild(this.createCardUI(card)));
+  }
+
+  renderField() {
+    this.fieldEl.innerHTML = '';
+    this.field.forEach(card => this.fieldEl.appendChild(this.createCardUI(card)));
+  }
 }
 
-function playCard(card) {
-    if (fieldCount < 5 && mana > 0) {
-        playerField.appendChild(card);
-        handCount--;
-        fieldCount++; 
-        mana--;
-    }
-}
-function cardDeath(card) {
-    if (fieldCount > 0) {
-        playerField.removeChild(card);
-        fieldCount--;
-    }
-}
-
-function initializeGame() {
-    // Initialize game state, event listeners, etc.
-}
-function gameLoop() {
-
-        // Main game logic goes here
-            const deckButton = document.getElementById('deck');
-        if (deckButton) {
-            deckButton.onclick = drawCard;
-        } else {
-            console.error("Deck button not found!");
-        }
-        if (mana > 0) {
-            playerHand.addEventListener('click', function(event) {
-                const card = event.target.closest('.card');
-                if (card) {
-                    playCard(card);
-                }
-                
-            });
-        }
-    }
-
-
-window.onload = initializeGame;
-window.requestAnimationFrame(gameLoop);
+// Initialize
+window.onload = () => new CardGame();
