@@ -1,16 +1,19 @@
 
 body{
     background-color: rgb(55, 55, 55);
-    
-   
-     
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 #game-board {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 60em;
+  width: 100em;
+  background-color: blueviolet;
 }
 
 .card {
@@ -24,32 +27,37 @@ body{
 .field {
     position: relative;
     z-index: 5;
-    left: 25%;
+    left: 0;
+    bottom: -300px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-top: 10px;
-  max-width: 1000px;
-  min-height: 400px;
+  width: 700px;
+  height: 400px;
   margin-bottom: 20px;
   background: lightgray;
 }
 .hand {
   position: relative;
   z-index: 10;
-  left: 30%;
+  left: 0;
+  bottom: -300px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  max-width: 700px;
-  min-height: 300px;
+  width: 600px;
+  height: 250px;
   background: lightblue;
 }
 #deck {
   position: relative;
   z-index: 5;
   bottom: 0px;
-  left: 70%;
+  left: 500px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -65,15 +73,15 @@ body{
 #player-status {
   position: relative;
   z-index: 15;
-  bottom: 0px;
-  left: 70%;
+  bottom: -300px;
+  left: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  max-width: 300px;
-  min-height: 100px;
+  width: 500px;
+  height: 100px;
   background: lightcoral;
   color: #000;
   font-family: Arial, sans-serif;

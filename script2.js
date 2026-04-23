@@ -62,7 +62,16 @@ class CardGame {
   init() {
     this.deckBtn?.addEventListener('click', () => this.drawCard());
     this.handEl.addEventListener('click', (e) => this.handleHandClick(e));
-    
+    this.fieldEl.addEventListener('click', (e) => this.handleFieldClick(e));
+
+  }
+
+  handleFieldClick(event) {
+    const cardEl = event.target.closest('.card');
+    if (!cardEl) return;
+
+    const cardId = parseInt(cardEl.dataset.id);
+    this.switchCardOrder(cardId);
   }
 
   updateStatus() {
@@ -91,6 +100,26 @@ class CardGame {
     
     const cardId = parseInt(cardEl.dataset.id);
     this.playCard(cardId);
+  }
+  switchCardOrder(cardId) {
+    if (this.field.length >= CONFIG.MAX_FIELD || this.mana <= 0) return;
+
+    const handIndex = this.hand.findIndex(c => c.id === cardId);
+    const fieldIndex = this.field.findIndex(c => c.id === cardId);
+
+    if (handIndex !== -1 && fieldIndex === -1) {
+      // Card is in hand, move to field
+      const [cardToSwitch] = this.hand.splice(handIndex, 1);
+      this.field.push(cardToSwitch);
+    } else if (fieldIndex !== -1 && handIndex === -1) {
+      // Card is in field, move to hand
+      const [cardToSwitch] = this.field.splice(fieldIndex, 1);
+      this.hand.push(cardToSwitch);
+    }
+    this.mana--; // Assume switching costs 1 mana
+    this.updateStatus();
+    this.renderHand();
+    this.renderField();
   }
 
   playCard(cardId) {
