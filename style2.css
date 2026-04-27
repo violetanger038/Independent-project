@@ -30,7 +30,7 @@ body{
     left: 0;
     bottom: -300px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-top: 10px;

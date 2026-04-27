@@ -30,8 +30,10 @@ let randomNumber = Math.floor(Math.random() * 10) + 1;
 const CONFIG = {
   MAX_HAND: 5,
   MAX_FIELD: 5,
-  STARTING_MANA: 3,
+  STARTING_MANA: 2,
 };
+const playerTurn = true;
+const gameWon = false;
 
 
 const cards = [
@@ -47,11 +49,13 @@ class CardGame {
   constructor() {
     this.hand = [];
     this.field = [];
+    this.opponentField = [];
     this.mana = CONFIG.STARTING_MANA;
     
     // DOM Elements
     this.handEl = document.getElementById('player-hand');
     this.fieldEl = document.getElementById('player-field');
+    this.opponentFieldEl = document.getElementById('opponent-field');
     this.deckBtn = document.getElementById('deck');
     this.statusEl = document.getElementById('player-status');
     this.init();
@@ -61,6 +65,7 @@ class CardGame {
 
   init() {
     this.deckBtn?.addEventListener('click', () => this.drawCard());
+    this.opponentFieldEl.addEventListener('click', () => this.opponentDrawCard());
     this.handEl.addEventListener('click', (e) => this.handleHandClick(e));
     this.fieldEl.addEventListener('click', (e) => this.handleFieldClick(e));
 
@@ -90,8 +95,18 @@ class CardGame {
     if (this.hand.length >= CONFIG.MAX_HAND) return console.log("Hand full!");
 
     const randomCard = cards[Math.floor(Math.random() * cards.length)];
-    this.hand.push(randomCard);
+    this.hand.push({ ...randomCard });
     this.renderHand();
+  }
+  opponentDrawCard() {
+    if (this.opponentField.length >= CONFIG.MAX_FIELD) return;
+    const randomCard = cards[Math.floor(Math.random() * cards.length)];
+    this.opponentField.push({ ...randomCard });
+    this.renderOpponentField();
+  }
+  renderOpponentField() {
+    this.opponentFieldEl.innerHTML = '';
+    this.opponentField.forEach(card => this.opponentFieldEl.appendChild(this.createCardUI(card)));
   }
 
   handleHandClick(event) {
@@ -122,6 +137,7 @@ class CardGame {
     this.renderField();
   }
 
+
   playCard(cardId) {
     if (this.field.length >= CONFIG.MAX_FIELD || this.mana <= 0) return;
 
@@ -135,7 +151,31 @@ class CardGame {
     
     this.renderField();
     this.renderHand();
+    this.cardAttack(cardId);
     console.log(`Played ${cardToPlay.name}. Mana remaining: ${this.mana}`);
+  }
+  cardAttack(cardId) {
+         const fieldIndex = this.field.map(c => c.id).lastIndexOf(cardId);
+    if (fieldIndex === -1) return;
+
+   const attackingCard = this.field[fieldIndex];
+    const opponentCard = this.opponentField[fieldIndex];
+    if (!opponentCard) return;
+
+    opponentCard.hp -= attackingCard.atk;
+    attackingCard.hp -= opponentCard.atk;
+    if (opponentCard.hp <= 0) {
+      this.opponentField.splice(fieldIndex, 1);
+      this.mana += 2; // Reward for destroying opponent's card
+      this.drawCard();
+    }
+    if (attackingCard.hp <= 0) {
+      this.field.splice(fieldIndex, 1);
+      this.mana += 1; // Reward for destroying own card
+    }
+
+    this.renderField();
+    this.renderOpponentField();
   }
 
   // Basic Rendering
@@ -150,5 +190,40 @@ class CardGame {
   }
 }
 
-// Initialize
-window.onload = () => new CardGame();
+document.addEventListener('DOMContentLoaded', () => {
+  window.game =new CardGame();
+  while (!gameWon) {
+  if (playerTurn) {
+    drawCard();
+    drawCard();
+    drawCard();
+   
+    opponentDrawCard();
+    opponentDrawCard();
+    while (CONFIG.STARTING_MANA > 0) {
+    
+      if (opponentField.length === 0) {
+        gameWon = true;
+        console.log("Player wins!");
+      } else if (field.length === 0) {
+        gameWon = true;
+        console.log("Opponent wins!");
+      } else {
+        return;
+      }
+      playerTurn = false;
+    }
+
+    // Player's turn logic
+  } else {
+    while (!gameWon) {
+      if (opponentField.length < 2) {
+        opponentDrawCard();
+      }
+      CONFIG.STARTING_MANA += 2;
+      playerTurn = true;
+    }
+    // Opponent's turn logic
+  }
+}
+});
