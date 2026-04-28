@@ -32,8 +32,6 @@ const CONFIG = {
   MAX_FIELD: 5,
   STARTING_MANA: 2,
 };
-const playerTurn = true;
-const gameWon = false;
 
 
 const cards = [
@@ -51,7 +49,9 @@ class CardGame {
     this.field = [];
     this.opponentField = [];
     this.mana = CONFIG.STARTING_MANA;
-    
+    this.playerTurn = true;
+    this.gameWon = false;
+
     // DOM Elements
     this.handEl = document.getElementById('player-hand');
     this.fieldEl = document.getElementById('player-field');
@@ -176,54 +176,43 @@ class CardGame {
 
     this.renderField();
     this.renderOpponentField();
+  
+  // ...existing code...
+// ...existing code...
+  startGame(); {
+    // simplified turn handling (avoid infinite loops in the browser)
+    if (this.playerTurn) {
+      this.drawCard();
+      this.drawCard();
+      this.drawCard();
+      this.opponentDrawCard();
+      // end player's simple turn
+      this.playerTurn = false;
+      return;
+    }
+
+    // Opponent's turn (simple example)
+    if (this.opponentField.length < 2) {
+      this.opponentDrawCard();
+    }
+    // Reset mana for example; adjust to your rules
+    this.mana = CONFIG.STARTING_MANA;
+    this.playerTurn = true;
   }
 
-  // Basic Rendering
-  renderHand() {
+  // Basic Rendering (moved inside the class)
+  renderHand(); {
     this.handEl.innerHTML = '';
     this.hand.forEach(card => this.handEl.appendChild(this.createCardUI(card)));
   }
 
-  renderField() {
+
+  renderField(); {
     this.fieldEl.innerHTML = '';
     this.field.forEach(card => this.fieldEl.appendChild(this.createCardUI(card)));
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  window.game =new CardGame();
-  while (!gameWon) {
-  if (playerTurn) {
-    drawCard();
-    drawCard();
-    drawCard();
-   
-    opponentDrawCard();
-    opponentDrawCard();
-    while (CONFIG.STARTING_MANA > 0) {
-    
-      if (opponentField.length === 0) {
-        gameWon = true;
-        console.log("Player wins!");
-      } else if (field.length === 0) {
-        gameWon = true;
-        console.log("Opponent wins!");
-      } else {
-        return;
-      }
-      playerTurn = false;
-    }
-
-    // Player's turn logic
-  } else {
-    while (!gameWon) {
-      if (opponentField.length < 2) {
-        opponentDrawCard();
-      }
-      CONFIG.STARTING_MANA += 2;
-      playerTurn = true;
-    }
-    // Opponent's turn logic
-  }
 }
-});
+window.onload = () => {
+  window.game = new CardGame();
+};
