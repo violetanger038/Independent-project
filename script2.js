@@ -52,35 +52,36 @@ class CardGame {
     this.playerTurn = true;
     this.gameWon = false;
 
+    this.turn = 'player'; 
+    this.turnNumber = 1;
+
     // DOM Elements
     this.handEl = document.getElementById('player-hand');
     this.fieldEl = document.getElementById('player-field');
     this.opponentFieldEl = document.getElementById('opponent-field');
     this.deckBtn = document.getElementById('deck');
     this.statusEl = document.getElementById('player-status');
+
     this.init();
     this.updateStatus();
-
   }
 
   init() {
     this.deckBtn?.addEventListener('click', () => this.drawCard());
-    this.opponentFieldEl.addEventListener('click', () => this.opponentDrawCard());
-    this.handEl.addEventListener('click', (e) => this.handleHandClick(e));
-    this.fieldEl.addEventListener('click', (e) => this.handleFieldClick(e));
-
+    this.opponentFieldEl?.addEventListener('click', () => this.opponentDrawCard());
+    this.handEl?.addEventListener('click', (e) => this.handleHandClick(e));
+    this.fieldEl?.addEventListener('click', (e) => this.handleFieldClick(e));
   }
 
   handleFieldClick(event) {
     const cardEl = event.target.closest('.card');
     if (!cardEl) return;
-
     const cardId = parseInt(cardEl.dataset.id);
     this.switchCardOrder(cardId);
   }
-
-  updateStatus() {
-    this.statusEl.innerHTML = `<p>Mana: <span id="player-mana">${this.mana}</span></p>`;
+    updateStatus() {
+    if (!this.statusEl) return;
+    this.statusEl.innerHTML = `<p>Turn: ${this.turn} (Turn #${this.turnNumber}) — Mana: <span id="player-mana">${this.mana}</span></p>`;
   }
 
   createCardUI(card) {
@@ -93,11 +94,11 @@ class CardGame {
 
   drawCard() {
     if (this.hand.length >= CONFIG.MAX_HAND) return console.log("Hand full!");
-
     const randomCard = cards[Math.floor(Math.random() * cards.length)];
     this.hand.push({ ...randomCard });
     this.renderHand();
   }
+
   opponentDrawCard() {
     if (this.opponentField.length >= CONFIG.MAX_FIELD) return;
     const randomCard = cards[Math.floor(Math.random() * cards.length)];
@@ -105,6 +106,7 @@ class CardGame {
     this.renderOpponentField();
   }
   renderOpponentField() {
+    if (!this.opponentFieldEl) return;
     this.opponentFieldEl.innerHTML = '';
     this.opponentField.forEach(card => this.opponentFieldEl.appendChild(this.createCardUI(card)));
   }
@@ -112,10 +114,12 @@ class CardGame {
   handleHandClick(event) {
     const cardEl = event.target.closest('.card');
     if (!cardEl) return;
-    
     const cardId = parseInt(cardEl.dataset.id);
+    // Only allow playing cards on player's turn
+    if (this.turn !== 'player') return;
     this.playCard(cardId);
   }
+
   switchCardOrder(cardId) {
     if (this.field.length >= CONFIG.MAX_FIELD || this.mana <= 0) return;
 
@@ -123,24 +127,20 @@ class CardGame {
     const fieldIndex = this.field.findIndex(c => c.id === cardId);
 
     if (handIndex !== -1 && fieldIndex === -1) {
-      // Card is in hand, move to field
       const [cardToSwitch] = this.hand.splice(handIndex, 1);
       this.field.push(cardToSwitch);
     } else if (fieldIndex !== -1 && handIndex === -1) {
-      // Card is in field, move to hand
       const [cardToSwitch] = this.field.splice(fieldIndex, 1);
       this.hand.push(cardToSwitch);
-    }
-    this.mana--; // Assume switching costs 1 mana
+      }
+    this.mana--; // switching costs 1 mana
     this.updateStatus();
     this.renderHand();
     this.renderField();
   }
 
-
   playCard(cardId) {
     if (this.field.length >= CONFIG.MAX_FIELD || this.mana <= 0) return;
-
     const cardIndex = this.hand.findIndex(c => c.id === cardId);
     if (cardIndex === -1) return;
 
@@ -148,71 +148,123 @@ class CardGame {
     this.field.push(cardToPlay);
     this.mana--;
     this.updateStatus();
-    
+
     this.renderField();
     this.renderHand();
     this.cardAttack(cardId);
     console.log(`Played ${cardToPlay.name}. Mana remaining: ${this.mana}`);
   }
+
   cardAttack(cardId) {
-         const fieldIndex = this.field.map(c => c.id).lastIndexOf(cardId);
+    const fieldIndex = this.field.map(c => c.id).lastIndexOf(cardId);
+    if (fieldIndex === -1) return;
+    cardAttack(cardId); {
+    const fieldIndex = this.field.map(c => c.id).lastIndexOf(cardId);
     if (fieldIndex === -1) return;
 
-   const attackingCard = this.field[fieldIndex];
+    const attackingCard = this.field[fieldIndex];
     const opponentCard = this.opponentField[fieldIndex];
     if (!opponentCard) return;
 
     opponentCard.hp -= attackingCard.atk;
     attackingCard.hp -= opponentCard.atk;
+
     if (opponentCard.hp <= 0) {
       this.opponentField.splice(fieldIndex, 1);
-      this.mana += 2; // Reward for destroying opponent's card
+      this.mana += 2; // reward
       this.drawCard();
     }
     if (attackingCard.hp <= 0) {
       this.field.splice(fieldIndex, 1);
-      this.mana += 1; // Reward for destroying own card
+      this.mana += 1; // reward
     }
 
     this.renderField();
     this.renderOpponentField();
-  
-  // ...existing code...
-// ...existing code...
+  }
   startGame(); {
-    // simplified turn handling (avoid infinite loops in the browser)
-    if (this.playerTurn) {
-      this.drawCard();
-      this.drawCard();
-      this.drawCard();
-      this.opponentDrawCard();
-      // end player's simple turn
-      this.playerTurn = false;
-      return;
-    }
-
-    // Opponent's turn (simple example)
-    if (this.opponentField.length < 2) {
-      this.opponentDrawCard();
-    }
-    // Reset mana for example; adjust to your rules
+    // initial setup: player draws 3, opponent draws 2
+    for (let i = 0; i < 3; i++) this.drawCard();
+    for (let i = 0; i < 2; i++) this.opponentDrawCard();
+    this.turn = 'player';
+    this.turnNumber = 1;
     this.mana = CONFIG.STARTING_MANA;
-    this.playerTurn = true;
+    this.updateStatus();
+    // Optionally auto-start player's turn logic here
   }
 
-  // Basic Rendering (moved inside the class)
+  startTurn(player); {
+    this.turn = player;
+    if (player === 'player') {
+      // increase mana each player turn (example rule)
+      this.mana = Math.min(10, CONFIG.STARTING_MANA + Math.floor(this.turnNumber / 1));
+      this.updateStatus();
+      // enable UI interactions automatically (already enabled by event handlers)
+    } else {
+      // opponent turn: simple AI with delays
+      this.mana = Math.min(10, CONFIG.STARTING_MANA + Math.floor(this.turnNumber / 1));
+      this.updateStatus();
+      // Run opponent actions asynchronously
+      setTimeout(() => this.opponentTurnLogic(), 700);
+    }
+  }
+  endTurn(); {
+    if (this.turn === 'player') {
+      this.startTurn('opponent');
+    } else {
+      this.turnNumber++;
+      this.startTurn('player');
+    }
+  }
+
+  opponentTurnLogic(); {
+    // Simple AI: draw, then try to play one card if possible, then attack
+    this.opponentDrawCard();
+    // play first playable card
+    const playableIndex = this.opponentField.length < CONFIG.MAX_FIELD ? -1 : -1; // placeholder, opponent plays from hand not implemented
+    // For simplicity, we'll have opponent try to summon from a draw directly into field if space:
+    if (this.opponentField.length < CONFIG.MAX_FIELD && this.mana > 0) {
+      const randomCard = cards[Math.floor(Math.random() * cards.length)];
+      this.opponentField.push({ ...randomCard });
+      this.mana--;
+      this.renderOpponentField();
+    }
+
+    // Opponent attacks if possible (each opponent field card attacks corresponding player field index)
+    setTimeout(() => {
+      for (let i = 0; i < this.opponentField.length; i++) {
+        if (i >= this.field.length) break;
+        const opp = this.opponentField[i];
+         const pl = this.field[i];
+        pl.hp -= opp.atk;
+        opp.hp -= pl.atk;
+        if (pl.hp <= 0) this.field.splice(i, 1);
+        if (opp.hp <= 0) this.opponentField.splice(i, 1);
+      }
+      this.renderField();
+      this.renderOpponentField();
+      // end opponent turn after actions
+      setTimeout(() => this.endTurn(), 600);
+    }, 600);
+  }
+
+  // Basic Rendering
   renderHand(); {
+    if (!this.handEl) return;
     this.handEl.innerHTML = '';
     this.hand.forEach(card => this.handEl.appendChild(this.createCardUI(card)));
   }
 
-
   renderField(); {
+    if (!this.fieldEl) return;
     this.fieldEl.innerHTML = '';
     this.field.forEach(card => this.fieldEl.appendChild(this.createCardUI(card)));
   }
 }
-}
+// ...existing code
 window.onload = () => {
   window.game = new CardGame();
+  window.game.startGame();
+  // Optionally expose endTurn to a UI button: document.getElementById('end-turn')?.addEventListener('click', () => window.game.endTurn());
 };
+}
