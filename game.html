@@ -1,30 +1,27 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style2.css">
-    </head>
-    <body>
-        <div id="game-board">
-            <div id="opponent-field" class="field"></div>
-            <div id="player-field" class="field"></div>
-            <div id="player-hand" class="hand"></div>
-            <div id="player-status"></div> 
-            <button id="deck">Draw Card</button>
-            
-        </div>
-       
-       
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pixel Card Game</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+  <div id="game-board">
+    <div id="player-status">Loading...</div>
 
-   
-        <script src="script2.js" async defer></script>
-    </body>
-</html>
+    <div id="main-area">
+      <div id="opponent-field" class="zone" aria-label="Opponent Field"></div>
+
+      <div id="player-field" class="zone" aria-label="Player Field"></div>
+
+      <div id="player-hand" class="zone" aria-label="Player Hand"></div>
+    </div>
+
+    <div id="controls" class="zone">
+      <button id="deck" type="button">Draw</button>
+      <button id="end-turn" type="button">End Turn</button>
+    </div>
+  </div>
+
+  <script src=
