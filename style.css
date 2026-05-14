@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Press Start 2P', monospace;
+    font-size: small;
     background-color: #333;
     margin: 0;
     padding: 0;
@@ -40,7 +42,7 @@ body {
     height: 100px;
     min-width: 100px;
     min-height: 100px;
-    border: #ffae00 solid 2px;
+    border: #ffd87a solid 2px;
     margin: 20px;
 }
 
@@ -90,7 +92,7 @@ canvas.game-canvas {
     width: 200px;
     padding: 10px;
     margin-top: 20px;
-    background-color: #ffae00;
+    background-color: #ffd87a;
     color: #333;
     border: none;
     border-radius: 4px;
@@ -142,7 +144,7 @@ canvas.game-canvas {
 .footer p {
     margin: 0;
     font-size: 14px;
-    color: gold;
+    color: #ffd87a;
 }
 footer-content {
     display: flex;

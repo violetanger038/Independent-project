@@ -118,7 +118,8 @@ html,body{
   box-shadow:
     0 0 0 3px #000 inset,
     6px 6px 0 0 var(--card-border);
-}button, .btn {
+}
+button, .btn {
   font-family: "Press Start 2P", monospace;
   font-size:10px;
   padding:8px 12px;

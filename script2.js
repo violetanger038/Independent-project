@@ -17,7 +17,13 @@ const cards = [
   { id: 2, name: "Ice Shield", atk: 2, hp: 8 },
   { id: 3, name: "Earth Golem", atk: 3, hp: 10 },
   { id: 4, name: "Wind Spirit", atk: 4, hp: 6 },
-  { id: 5, name: "Light Guardian", atk: 6, hp: 4 }
+  { id: 5, name: "Light Guardian", atk: 6, hp: 4 },
+  { id: 6, name: "Dark Assassin", atk: 5, hp: 5 },
+  { id: 7, name: "Mystic Elf", atk: 4, hp: 5 },
+  { id: 8, name: "Shadow Ninja", atk: 5, hp: 5 },
+  { id: 9, name: "Arcane Wizard", atk: 3, hp: 6 },
+  { id: 10, name: "Celestial Phoenix", atk: 6, hp: 4 },
+  { id: 11, name: "Frost Giant", atk: 7, hp: 5 }
 ];
 
 // --- Game Logic Class ---
@@ -31,6 +37,7 @@ class CardGame {
 
     this.turn = 'player';
     this.turnNumber = 1;
+    this.gameWon = false;
 // selection state for attacks
     this.selectedAttacker = null;
 
@@ -42,9 +49,6 @@ class CardGame {
     this.statusEl = document.getElementById('player-status');
 
      // initialize event handlers and update UI
-     this.init();
-     this.updateStatus();
-
     this.init();
     this.updateStatus();
   }
@@ -105,9 +109,10 @@ init() {
    }
 highlightSelectedAttacker() {
     if (!this.fieldEl) return;
-    Array.from(this.fieldEl.children).forEach((el, i) => {
-      if (i === this.selectedAttacker) el.classList.add('selected');
-      else el.classList.remove('selected');
+     console.log('highlightSelectedAttacker', { selected: this.selectedAttacker, children: this.fieldEl.children.length });
+     Array.from(this.fieldEl.children).forEach((el, i) => {
+       if (i === Number(this.selectedAttacker)) el.classList.add('selected');
+       else el.classList.remove('selected');
     });
   }
   // perform attack from attackerIndex -> defenderIndex
@@ -132,6 +137,7 @@ highlightSelectedAttacker() {
     this.renderField();
     this.renderOpponentField();
     this.updateStatus();
+    this.checkIfGameWon();
   }
 // --- status / UI creation ---
   updateStatus() {
@@ -256,11 +262,54 @@ opponentTurnLogic() {
         if (opp.hp <= 0) this.opponentField.splice(i, 1);
       }
   this.renderField();
-      this.renderOpponentField();
+  this.renderOpponentField();
+  this.checkIfGameWon();
       // end opponent turn
       setTimeout(() => this.endTurn(), 600);
     }, 600);
   }
+   // Check win state and stop the game if someone won (simple board-based rules)
+   checkIfGameWon() {
+     if (this.gameWon) return;
+     // Player wins if opponent has no cards and player has at least one
+     if (this.opponentField.length === 0 && this.field.length > 0) {
+       this.gameWon = true;
+       if (this.statusEl) this.statusEl.innerHTML = '<p>Player wins!</p><p>Restarting...</p>';
+       // restart after short delay
+       setTimeout(() => this.resetGame(), 1500);
+       return;
+     }
+     // Opponent wins if player has no cards and opponent has at least one
+     if (this.field.length === 0 && this.opponentField.length > 0) {
+       this.gameWon = true;
+       if (this.statusEl) this.statusEl.innerHTML = '<p>Opponent wins!</p><p>Restarting...</p>';
+       // restart after short delay
+       setTimeout(() => this.resetGame(), 1500);
+       return;
+     }
+     // Draw if both sides empty
+     if (this.field.length === 0 && this.opponentField.length === 0) {
+       this.gameWon = true;
+       if (this.statusEl) this.statusEl.innerHTML = '<p>Draw</p><p>Restarting...</p>';
+       // restart after short delay
+       setTimeout(() => this.resetGame(), 1500);
+     }
+   }
+   resetGame() {
+     this.field = [];
+     this.hand = [];
+     this.opponentField = [];
+     this.turn = 'player';
+     this.turnNumber = 1;
+     this.mana = CONFIG.STARTING_MANA;
+     this.gameWon = false;
+     this.updateStatus();
+     this.renderHand();
+     this.renderField();
+     this.renderOpponentField();
+     this.startGame();
+   }
+
   // Basic Rendering
   renderOpponentField() {
     if (!this.opponentFieldEl) return;
