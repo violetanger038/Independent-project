@@ -112,6 +112,20 @@ html,body{
   color:#222;
 }
 
+/* card artwork */
+.card-art {
+  width: 100%;
+  height: 80px; /* adjust to fit your card layout */
+  object-fit: contain;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  margin-bottom: 6px;
+}
+
+
+
 /* selected attacker highlight (pixel-like) */
 .card.selected {
   outline: 3px solid var(--accent);

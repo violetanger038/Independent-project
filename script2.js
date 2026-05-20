@@ -13,17 +13,19 @@ const CONFIG = {
 };
 
 const cards = [
-  { id: 1, name: "Fire Dragon", atk: 5, hp: 5 },
-  { id: 2, name: "Ice Shield", atk: 2, hp: 8 },
-  { id: 3, name: "Earth Golem", atk: 3, hp: 10 },
-  { id: 4, name: "Wind Spirit", atk: 4, hp: 6 },
-  { id: 5, name: "Light Guardian", atk: 6, hp: 4 },
-  { id: 6, name: "Dark Assassin", atk: 5, hp: 5 },
-  { id: 7, name: "Mystic Elf", atk: 4, hp: 5 },
-  { id: 8, name: "Shadow Ninja", atk: 5, hp: 5 },
-  { id: 9, name: "Arcane Wizard", atk: 3, hp: 6 },
-  { id: 10, name: "Celestial Phoenix", atk: 6, hp: 4 },
-  { id: 11, name: "Frost Giant", atk: 7, hp: 5 }
+  { id: 1, name: "Fire Dragon", atk: 5, hp: 5, img: "pictures/fire-dragon.png" },
+  { id: 2, name: "Ice Shield", atk: 2, hp: 8, img: "pictures/ice-shield.png" },
+  { id: 3, name: "Earth Golem", atk: 3, hp: 10, img: "pictures/earth-golem.png" },
+  { id: 4, name: "Wind Spirit", atk: 4, hp: 6, img: "pictures/wind-spirit.png" },
+  { id: 5, name: "Light Guardian", atk: 6, hp: 4, img: "pictures/light-guardian.png" },
+  { id: 6, name: "Dark Assassin", atk: 5, hp: 5, img: "pictures/dark-assassin.png" },
+  { id: 7, name: "Mystic Elf", atk: 4, hp: 5, img: "pictures/mystic-elf.png" },
+  { id: 8, name: "Shadow Ninja", atk: 5, hp: 5, img: "pictures/shadow-ninja.png" },
+  { id: 9, name: "Arcane Wizard", atk: 3, hp: 6, img: "pictures/arcane-wizard.png" },
+  { id: 10, name: "Celestial Phoenix", atk: 6, hp: 4, img: "pictures/celestial-phoenix.png" },
+  { id: 11, name: "Frost Giant", atk: 7, hp: 5, img: "pictures/frost-giant.png" },
+  { id: 12, name: "Thunder Beast", atk: 8, hp: 4, img: "pictures/thunder-beast.png" },
+  { id: 13, name: "Winter Boar", atk: 9, hp: 3, img: "pictures/ice-boar.png" }
 ];
 
 // --- Game Logic Class ---
@@ -148,8 +150,14 @@ highlightSelectedAttacker() {
   createCardUI(card) {
     const div = document.createElement('div');
     div.className = 'card';
-    div.innerHTML = `<h3>${card.name}</h3><p>ATK: ${card.atk} | HP: ${card.hp}</p>`;
     div.dataset.id = card.id; // Store ID for logic
+
+    // include image in the HTML so it isn't removed by innerHTML assignment
+    const imgHtml = card.img
+      ? `<img class="card-art" src="${card.img}" alt="${card.name}" onerror="this.style.display='none'">`
+      : '';
+
+    div.innerHTML = `${imgHtml}<h3>${card.name}</h3><p>ATK: ${card.atk} | HP: ${card.hp}</p>`;
     // data-index will be set by render functions
     return div;
   }
@@ -346,3 +354,4 @@ window.onload = () => {
   window.game.startGame();
   document.getElementById('end-turn')?.addEventListener('click', () => window.game.endTurn());
 };
+
